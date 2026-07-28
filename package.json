@@ -1,0 +1,17 @@
+{
+  "name": "current-affairs-upsc-notes",
+  "version": "2.0.0",
+  "description": "Current Affairs and UPSC Notes — a free public library where the admin uploads notes and anyone can browse & download them, with a password-protected admin panel.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "multer": "^2.2.0",
+    "nanoid": "^3.3.7"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
