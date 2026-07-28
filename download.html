@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Download note — Current Affairs and UPSC Notes</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <a href="/" class="brand">
+      <div class="brand-mark">CA</div>
+      <div class="brand-text">
+        <div class="brand-name">CURRENT AFFAIRS AND UPSC NOTES</div>
+        <div class="brand-tag">Free Study Material Hub</div>
+      </div>
+    </a>
+    <a href="https://quizmind-pro.onrender.com/" class="quizmind-btn">← Back to QuizMind</a>
+  </div>
+</div>
+
+<div class="wrap" style="max-width:600px; padding-top:36px;">
+  <div class="ticket" id="ticket">
+    <div class="ticket-eyebrow">Study note</div>
+    <div class="ticket-title" id="fileTitle">Loading…</div>
+    <div class="ticket-badges" id="ticketBadges"></div>
+
+    <div class="perforation"></div>
+
+    <div id="ticketBody">
+      <div class="ticket-row"><span class="k">Tracking No.</span><span class="v" id="trackId"></span></div>
+      <div class="ticket-row"><span class="k">Size</span><span class="v" id="fileSize"></span></div>
+      <div class="ticket-row"><span class="k">Uploaded</span><span class="v" id="fileDate"></span></div>
+    </div>
+    <div class="ticket-desc" id="fileNote" style="display:none;"></div>
+
+    <button class="btn" id="downloadBtn" style="display:none;">⬇ Download this note</button>
+    <p class="ticket-note" id="errorNote" style="display:none; color:var(--danger);"></p>
+
+    <div style="text-align:center;">
+      <a href="/" class="back-link">← Back to the full library</a>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div class="foot-credit">Curated by <span>QuidMind(AM)</span></div>
+    <div class="foot-sub">CURRENT AFFAIRS AND UPSC NOTES · free study material, hosted for aspirants</div>
+  </footer>
+</div>
+
+<script>
+const id = window.location.pathname.split('/').pop();
+
+function fmtSize(bytes){
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/(1024*1024)).toFixed(1) + ' MB';
+}
+
+async function load(){
+  try {
+    const res = await fetch(`/api/meta/${id}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'This link is invalid.');
+
+    document.getElementById('fileTitle').textContent = data.originalName;
+    document.getElementById('trackId').textContent = id;
+    document.getElementById('fileSize').textContent = fmtSize(data.size);
+    document.getElementById('fileDate').textContent = new Date(data.uploadedAt).toLocaleDateString();
+    document.getElementById('ticketBadges').innerHTML = `<span class="badge">${data.category || 'General'}</span>`;
+
+    if (data.note) {
+      const noteEl = document.getElementById('fileNote');
+      noteEl.style.display = 'block';
+      noteEl.textContent = data.note;
+    }
+
+    const btn = document.getElementById('downloadBtn');
+    btn.style.display = 'block';
+    btn.addEventListener('click', () => {
+      window.location.href = `/api/download/${id}`;
+    });
+  } catch (err) {
+    document.getElementById('fileTitle').textContent = 'Note not found';
+    document.getElementById('ticketBody').style.display = 'none';
+    document.getElementById('errorNote').style.display = 'block';
+    document.getElementById('errorNote').textContent = err.message;
+  }
+}
+load();
+</script>
+</body>
+</html>
